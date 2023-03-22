@@ -47,9 +47,7 @@ export default {
       .get("http://localhost/myvisa/dossier/getTimeDate")
       .then((response) => {
         let data = response.data;
-
         const outputData = {};
-
         data.forEach((item) => {
           const date = item.date;
           if (date in outputData) {

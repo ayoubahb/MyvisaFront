@@ -2,7 +2,7 @@
 <template>
   <div class="container">
     <h3 class="text-center my-5">Please fill out the form below to continue</h3>
-    <form @submit.prevent="craeteDossier">
+    <form @submit.prevent="createDossier">
       <div class="row">
         <div class="mb-3 col-6">
           <label class="form-label"
@@ -225,28 +225,32 @@ export default {
       this.selectedDate = data.day;
       this.formData.date = data.day;
     },
-    craeteDossier() {
-      // console.log(this.formData);
-      axios
-        .post("http://localhost/myvisa/dossier/create", this.formData)
-        .then((response) => {
-          if (
-            response.status === 200 &&
-            response.data.message == "Dossier created"
-          ) {
-            Cookies.set("token", response.data.code, {
-              secure: true,
-              sameSite: "strict",
-            });
-            window.location.href = "/reservationPage";
-          } else if (
-            response.status === 200 &&
-            response.data.message == "Inputs Not Valide"
-          ) {
-            this.validate = response.data.Validation;
-          }
-        })
-        .catch((error) => console.log(error));
+    async createDossier() {
+      try {
+        const response = await axios.post(
+          "http://localhost/myvisa/dossier/create",
+          this.formData
+        );
+
+        if (
+          response.status === 200 &&
+          response.data.message == "Dossier created"
+        ) {
+          Cookies.set("token", response.data.code, {
+            secure: true,
+            sameSite: "strict",
+          });
+
+          window.location.href = "/reservationPage";
+        } else if (
+          response.status === 200 &&
+          response.data.message == "Inputs Not Valide"
+        ) {
+          this.validate = response.data.Validation;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };
